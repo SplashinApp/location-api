@@ -1,3 +1,13 @@
-# splashin-video-service
+# Location Api 
 
-### File based routing built from https://blog.bitsrc.io/demystifying-routing-creating-your-own-file-path-based-router-e5f7245a4925
+### Used to ingest location data and batch insert into the database 
+
+
+#### kubectl commands
+
+- `kubectl apply -f location-api-deployment.yaml`
+- `kubectl get pods`
+- `kubectl logs <pod-name>`
+- `kubectl describe pod <pod-name>`
+- `kubectl rollout restart deployment location-api`
+- `kubectl get svc --namespace=ingress-nginx`
