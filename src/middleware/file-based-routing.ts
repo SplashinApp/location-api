@@ -35,6 +35,7 @@ async function executeRoute(importURL:string, req:Request, resp:Response) {
 
         return data
     } catch (e) {
+        console.warn("Error while importing", importURL)
         console.log(e)
         resp.statusCode = 404
         return false
