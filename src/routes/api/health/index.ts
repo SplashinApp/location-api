@@ -7,5 +7,5 @@ export const get = (req:Request, res:Response) => {
     res.setHeader('Date', '')
     res.setHeader('Last-Modified', '')
     console.warn(`TEST: ${process.env.TEST}`)
-    res.end()
+    res.send(`TEST ${process.env.TEST}`)
 }
