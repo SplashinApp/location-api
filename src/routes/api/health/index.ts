@@ -8,5 +8,7 @@ export const get = (req:Request, res:Response) => {
     res.removeHeader('Content-Type')
     res.removeHeader('Content-Length')
     res.removeHeader('Transfer-Encoding')
-    res.end()
+    res.removeHeader('Last-Modified')
+    res.setHeader('Set-Cookie', '')
+    res.send('ok')
 }
