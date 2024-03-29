@@ -48,7 +48,7 @@ export const fileRouter = async (req:Request, resp:Response) => {
         let isFile = fs.existsSync(importURL + '.js')
 
         if(!isFile) {
-            importURL += 'index.js'
+            importURL += '/index.js'
         } else {
             importURL += '.js'
         }
