@@ -11,9 +11,9 @@
     "dev": "export NODE_ENV=development && tsx watch src/index.ts",
     "staging": "export NODE_ENV=development && tsx watch src/index.ts",
     "production": "export NODE_ENV=production && tsx src/index.ts",
-    "docker:build": "docker build -t joshuadunning/location-api:latest .",
-    "docker:run": "docker run -p 3003:3000 joshuadunning/location-api:latest",
-    "docker:push": "docker push joshuadunning/location-api:latest",
+    "docker:build": "docker build -t joshuadunning/location-api:0.0.2 .",
+    "docker:run": "docker run -p 8080:8080 joshuadunning/location-api:0.0.2",
+    "docker:push": "docker push joshuadunning/location-api:0.0.2",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
