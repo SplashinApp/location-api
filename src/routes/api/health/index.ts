@@ -7,7 +7,6 @@ export const get = (req:Request, res:Response) => {
     res.setHeader('Content-Length', '')
     res.setHeader('Transfer-Encoding','')
     res.setHeader('Last-Modified', '')
-    res.setHeader('c-do-app-origin', '')
     res.setHeader('Set-Cookie', '')
     res.setHeader('Cache-Control', '')
     res.end()
