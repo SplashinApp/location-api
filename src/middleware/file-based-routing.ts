@@ -41,41 +41,48 @@ async function executeRoute(importURL:string, req:Request, resp:Response) {
     }
 }
 export const fileRouter = async (req:Request, resp:Response) => {
-    let importURL = (ROOT_FOLDER + req.url).replace("//", "/")
+    try{
+        let importURL = (ROOT_FOLDER + req.url).replace("//", "/")
 
-    let isFile = fs.existsSync(importURL + '.js')
+        let isFile = fs.existsSync(importURL + '.js')
 
-    if(!isFile) {
-        importURL += '/index.js'
-    } else {
-        importURL += '.js'
-    }
-
-    let data = await executeRoute(importURL, req, resp)
-
-    if(data === false) {
-        console.log("Checking if we're dealing with a dynamic route...")
-
-        const pathParts = (ROOT_FOLDER + req.url).replace("//", "/").split("/")
-
-        const dynamicParam = pathParts.pop()
-        let prevPath = pathParts.join("/")
-
-        // go look for a special file with brackets on its name
-        let dynamicHandler = await getDynamicHandler(prevPath)
-        if(!dynamicHandler) { // if we can't find it, then it's a 404
-            resp.statusCode = 404
-            return resp.send("Not found")
+        if(!isFile) {
+            importURL += '/index.js'
+        } else {
+            importURL += '.js'
         }
 
-        // add the new param to the request parameters
-        if(dynamicParam)
-        req.params = {...req.params, [dynamicHandler.param]: dynamicParam}
+        let data = await executeRoute(importURL, req, resp)
 
-        //execute the new, dynamic route
-        data = await executeRoute( [prevPath, dynamicHandler.file].join("/"), req, resp)
-        resp.send(data)
-    } else {
-        resp.send(data)
+        if(data === false) {
+            console.log("Checking if we're dealing with a dynamic route...")
+
+            const pathParts = (ROOT_FOLDER + req.url).replace("//", "/").split("/")
+
+            const dynamicParam = pathParts.pop()
+            let prevPath = pathParts.join("/")
+
+            // go look for a special file with brackets on its name
+            let dynamicHandler = await getDynamicHandler(prevPath)
+            if(!dynamicHandler) { // if we can't find it, then it's a 404
+                resp.statusCode = 404
+                return resp.send("Not found")
+            }
+
+            // add the new param to the request parameters
+            if(dynamicParam)
+                req.params = {...req.params, [dynamicHandler.param]: dynamicParam}
+
+            //execute the new, dynamic route
+            data = await executeRoute( [prevPath, dynamicHandler.file].join("/"), req, resp)
+            resp.send(data)
+        } else {
+            resp.send(data)
+        }
+    }catch (e) {
+        console.error(req.url)
+        console.error(e)
+        resp.statusCode = 500
+        resp.send("Internal Server Error")
     }
 }
