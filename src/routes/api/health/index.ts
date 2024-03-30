@@ -1,12 +1,11 @@
 import { Request, Response } from 'express'
+import dotenv from 'dotenv'
+dotenv.config({path:`.env.${process.env.NODE_ENV}`})
 
 export const get = (req:Request, res:Response) => {
     res.removeHeader('X-Powered-By')
-    res.removeHeader('Date')
-    res.removeHeader('Keep-Alive')
-    res.removeHeader('Connection')
-    res.removeHeader('Content-Type')
-    res.removeHeader('Content-Length')
-    res.removeHeader('Transfer-Encoding')
-    res.end()
+    res.setHeader('Date', '')
+    res.setHeader('Last-Modified', '')
+    console.warn(`TEST: ${process.env.TEST}`)
+    res.send(`TEST ${process.env.TEST}`)
 }

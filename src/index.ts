@@ -9,9 +9,9 @@ const app = express()
 const server = http.createServer(app)
 
 app.set('etag', false)
+app.use(express.json())
 app.all('/*', fileRouter)
-// process.env.PORT
-server.listen(8080, () => {
-    // console.log(`Server is running on port ${process.env.PORT}`)
-    console.log(`Server is running on port 8080`)
+
+server.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`)
 })
