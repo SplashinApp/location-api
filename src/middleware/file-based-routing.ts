@@ -16,7 +16,6 @@ async function getDynamicHandler(folder:string) {
             param: dynamicFile.replace("[", "").replace("].js", "")
         }
     } catch (e) {
-        console.log(e)
         return null
     }
 }
@@ -35,8 +34,6 @@ async function executeRoute(importURL:string, req:Request, resp:Response) {
 
         return data
     } catch (e) {
-        console.warn("Error while importing", importURL)
-        console.log(e)
         resp.statusCode = 404
         return false
     }
@@ -56,7 +53,6 @@ export const fileRouter = async (req:Request, resp:Response) => {
         let data = await executeRoute(importURL, req, resp)
 
         if(data === false) {
-            console.log("Checking if we're dealing with a dynamic route...")
 
             const pathParts = (ROOT_FOLDER + req.url).replace("//", "/").split("/")
 
@@ -81,8 +77,6 @@ export const fileRouter = async (req:Request, resp:Response) => {
             resp.send(data)
         }
     }catch (e) {
-        console.error(req.url)
-        console.error(e)
         resp.statusCode = 500
         resp.send("Internal Server Error")
     }
