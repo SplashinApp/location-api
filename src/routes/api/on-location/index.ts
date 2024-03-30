@@ -23,7 +23,6 @@ export const post = (req:Request, res:Response) => {
     console.log(`Location Update for user: ${location.user_id} at ${location.last_updated_at} with Activity ${location.activity}`)
 
     if(!isValid(location)){
-        console.warn('Invalid Request')
         res.status(400).send('Invalid Request')
         return
     }
@@ -126,7 +125,6 @@ const processActivities = async (client: PoolClient, items:any[]) => {
         `, items)
 
     await client.query(query)
-    console.debug(`Inserted Activities ${items.length}`)
 }
 
 const processFullLocations = async (client: PoolClient, items:any[]) => {
@@ -204,7 +202,6 @@ const processFullLocations = async (client: PoolClient, items:any[]) => {
         `, items)
 
     await client.query(query)
-    console.debug(`Inserted Locations ${items.length}`)
 }
 
 setInterval(() => {
