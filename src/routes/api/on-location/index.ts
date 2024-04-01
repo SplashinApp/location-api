@@ -21,7 +21,7 @@ export const post = (req:Request, res:Response) => {
 
     try{
         const location:UserLocationUpdate = req.body
-        // console.log(`Location Update for user: ${location.user_id} at ${location.last_updated_at} with Activity ${location.activity}`)
+        console.log(`Location Update for user: ${location.user_id} at ${location.last_updated_at} with Activity ${location.activity}`)
 
         if(!isValid(location)){
             res.status(400).send('Invalid Request')
