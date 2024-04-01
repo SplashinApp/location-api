@@ -19,17 +19,22 @@ function isValid(arg: any): arg is UserLocationUpdate{
 
 export const post = (req:Request, res:Response) => {
 
-    const location:UserLocationUpdate = req.body
-    console.log(`Location Update for user: ${location.user_id} at ${location.last_updated_at} with Activity ${location.activity}`)
+    try{
+        const location:UserLocationUpdate = req.body
+        // console.log(`Location Update for user: ${location.user_id} at ${location.last_updated_at} with Activity ${location.activity}`)
 
-    if(!isValid(location)){
-        res.status(400).send('Invalid Request')
-        return
-    }
-    locations.set(location.user_id, location)
+        if(!isValid(location)){
+            res.status(400).send('Invalid Request')
+            return
+        }
+        locations.set(location.user_id, location)
 
-    if(locations.size > 100){
-        processLocations()
+        if(locations.size > 100){
+            processLocations()
+        }
+    }catch (e) {
+        console.error(e)
+        res.status(500).send('Internal Server Error')
     }
 
 
@@ -202,6 +207,7 @@ const processFullLocations = async (client: PoolClient, items:any[]) => {
         `, items)
 
     await client.query(query)
+    console.log(`Updated ${items.length} locations`)
 }
 
 setInterval(() => {
