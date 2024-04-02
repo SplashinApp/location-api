@@ -7,6 +7,7 @@ import {PoolClient} from "pg";
 // We are using a Map to make sure if the same user sends multiple requests, we only keep the latest one
 const locations:Map<string, UserLocationUpdate> = new Map()
 let curCount = 0
+let processing = false
 
 function isValid(arg: any): arg is UserLocationUpdate{
     // validate all required fields are present
@@ -45,11 +46,14 @@ export const post = (req:Request, res:Response) => {
     res.end()
 }
 
-const processLocations = () => {
+const processLocations = async() => {
+    if(processing) return
+    processing = true
     const queuedMap = new Map(locations)
     locations.clear()
     const arr = Array.from(queuedMap.values())
-    insertLocations(arr)
+    await insertLocations(arr)
+    processing = false
 
 }
 
