@@ -6,6 +6,7 @@ import {PoolClient} from "pg";
 
 // We are using a Map to make sure if the same user sends multiple requests, we only keep the latest one
 const locations:Map<string, UserLocationUpdate> = new Map()
+let curCount = 0
 
 function isValid(arg: any): arg is UserLocationUpdate{
     // validate all required fields are present
@@ -21,7 +22,7 @@ export const post = (req:Request, res:Response) => {
 
     try{
         const location:UserLocationUpdate = req.body
-        console.log(`Location Update for user: ${location.user_id} at ${location.last_updated_at} with Activity ${location.activity}`)
+        // console.log(`Location Update for user: ${location.user_id} at ${location.last_updated_at} with Activity ${location.activity}`)
 
         if(!isValid(location)){
             res.status(400).send('Invalid Request')
@@ -130,6 +131,7 @@ const processActivities = async (client: PoolClient, items:any[]) => {
         `, items)
 
     await client.query(query)
+    curCount += items.length
 }
 
 const processFullLocations = async (client: PoolClient, items:any[]) => {
@@ -207,9 +209,14 @@ const processFullLocations = async (client: PoolClient, items:any[]) => {
         `, items)
 
     await client.query(query)
-    console.log(`Updated ${items.length} locations`)
+    curCount += items.length
 }
 
 setInterval(() => {
     processLocations()
 }, 1000 * 5)
+
+setInterval(() => {
+    console.log(`Processed ${curCount} locations in the last 1 minute`)
+    curCount = 0
+}, 1000 * 60)
