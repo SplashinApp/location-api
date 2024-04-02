@@ -6,6 +6,5 @@ export const get = (req:Request, res:Response) => {
     res.removeHeader('X-Powered-By')
     res.setHeader('Date', '')
     res.setHeader('Last-Modified', '')
-    console.warn(`TEST: ${process.env.TEST}`)
     res.send(`TEST ${process.env.TEST}`)
 }
