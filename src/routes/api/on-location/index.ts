@@ -7,6 +7,10 @@ import {PoolClient} from "pg";
 // We are using a Map to make sure if the same user sends multiple requests, we only keep the latest one
 const locations:Map<string, UserLocationUpdate> = new Map()
 let curCount = 0
+let completions:{
+    time: number,
+    count: number
+}[] = []
 let processing = false
 
 function isValid(arg: any): arg is UserLocationUpdate{
@@ -49,12 +53,15 @@ export const post = (req:Request, res:Response) => {
 const processLocations = async() => {
     if(processing) return
     processing = true
+    const now = Date.now()
     const queuedMap = new Map(locations)
     locations.clear()
     const arr = Array.from(queuedMap.values())
+        .sort((a,b)=> a.user_id.localeCompare(b.user_id))
+
     await insertLocations(arr)
     processing = false
-
+    completions.push({time: now - Date.now(), count: arr.length})
 }
 
 const formatLocation = (location:UserLocationUpdate) => {
@@ -221,6 +228,8 @@ setInterval(() => {
 }, 1000 * 5)
 
 setInterval(() => {
-    console.log(`Processed ${curCount} locations in the last 1 minute`)
+    const avg = completions.reduce((acc, cur) => acc + cur.count, 0) / completions.length
+    console.log(`Processed ${curCount} locations in the last 1 minute with ${completions.length} completions. Average: ${avg} locations per completion.`)
+    completions = []
     curCount = 0
 }, 1000 * 60)
