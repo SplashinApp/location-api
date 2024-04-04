@@ -61,6 +61,7 @@ const processLocations = async() => {
 
     await insertLocations(arr)
     processing = false
+    if(arr.length > 0)
     completions.push({time: now - Date.now(), count: arr.length})
 }
 
@@ -229,7 +230,7 @@ setInterval(() => {
 
 setInterval(() => {
     const avg = completions.reduce((acc, cur) => acc + cur.count, 0) / completions.length
-    console.log(`Processed ${curCount} locations in the last 1 minute with ${completions.length} completions. Average: ${avg} locations per completion.`)
+    console.log(`Processed ${curCount} locations in the last 1 minute with ${completions.length} completions. Average: ${Math.round(avg)} locations per completion.`)
     completions = []
     curCount = 0
 }, 1000 * 60)
