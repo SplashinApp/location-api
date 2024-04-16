@@ -7,5 +7,9 @@ export const get = (req:Request, res:Response) => {
     res.removeHeader('X-Powered-By')
     res.setHeader('Date', '')
     res.setHeader('Last-Modified', '')
+    logger.info('Health check');
+    logger.debug('Debugging health check');
+    logger.warn('Warning health check');
+    logger.error('Error health check');
     res.send('ok')
 }

@@ -233,7 +233,7 @@ setInterval(() => {
     logger.info({
         count: curCount,
         completions: completions.length,
-        avg: Math.round(avg)
+        avg: avg ? Math.round(avg) : 0
     })
     completions = []
     curCount = 0
