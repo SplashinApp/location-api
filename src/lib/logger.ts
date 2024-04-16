@@ -2,12 +2,11 @@ import pino from 'pino'
 import dotenv from 'dotenv'
 dotenv.config({path:`.env.${process.env.NODE_ENV}`})
 
-console.log(process.env.NODE_ENV)
+let transport
 if(
     process.env.NODE_ENV !== 'development'
 ){
-    console.log(`using logtail ${process.env.LOGTAIL_SOURCE_TOKEN}`)
-    pino.transport({
+    transport = pino.transport({
         targets:[
             {
                 target: '@logtail/pino',
@@ -16,6 +15,6 @@ if(
         ]
     })
 }
-const logger = pino.pino()
+const logger = pino.pino(transport)
 
 export default logger
