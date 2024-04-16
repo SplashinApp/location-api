@@ -229,6 +229,9 @@ setInterval(() => {
 }, 1000 * 5)
 
 setInterval(() => {
+
+    logger.info('hi')
+    console.log('hi')
     const avg = completions.reduce((acc, cur) => acc + cur.count, 0) / completions.length
     console.info({
         count: curCount,
