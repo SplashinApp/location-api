@@ -21,6 +21,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@logtail/pino": "^0.4.21",
     "@supabase/supabase-js": "^2.39.7",
     "@types/pg": "^8.11.4",
     "@types/pg-format": "^1.0.5",
