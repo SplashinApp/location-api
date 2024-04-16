@@ -3,6 +3,7 @@ import {ActivityUpdate, UserLocationUpdate} from "../../../interface/index.js";
 import {connectToDB} from "../../../lib/db.server.js";
 import format from 'pg-format'
 import {PoolClient} from "pg";
+import logger from "../../../lib/logger.js";
 
 // We are using a Map to make sure if the same user sends multiple requests, we only keep the latest one
 const locations:Map<string, UserLocationUpdate> = new Map()
@@ -18,7 +19,7 @@ function isValid(arg: any): arg is UserLocationUpdate{
     try{
         return arg.user_id && typeof arg.user_id === 'string' && arg.user_id.length === 36
     }catch(e){
-        console.error(e)
+        logger.error(e)
         return false
     }
 }
@@ -27,7 +28,6 @@ export const post = (req:Request, res:Response) => {
 
     try{
         const location:UserLocationUpdate = req.body
-        // console.log(`Location Update for user: ${location.user_id} at ${location.last_updated_at} with Activity ${location.activity}`)
 
         if(!isValid(location)){
             res.status(400).send('Invalid Request')
@@ -39,7 +39,7 @@ export const post = (req:Request, res:Response) => {
             processLocations()
         }
     }catch (e) {
-        console.error(e)
+        logger.error(e)
         res.status(500).send('Internal Server Error')
     }
 
@@ -230,7 +230,11 @@ setInterval(() => {
 
 setInterval(() => {
     const avg = completions.reduce((acc, cur) => acc + cur.count, 0) / completions.length
-    console.log(`Processed ${curCount} locations in the last 1 minute with ${completions.length} completions. Average: ${Math.round(avg)} locations per completion.`)
+    logger.info({
+        count: curCount,
+        completions: completions.length,
+        avg: Math.round(avg)
+    })
     completions = []
     curCount = 0
 }, 1000 * 60)
