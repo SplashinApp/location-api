@@ -6,7 +6,7 @@ console.log(process.env.NODE_ENV)
 if(
     process.env.NODE_ENV !== 'development'
 ){
-    console.log('using logtail')
+    console.log(`using logtail ${process.env.LOGTAIL_SOURCE_TOKEN}`)
     pino.transport({
         targets:[
             {
