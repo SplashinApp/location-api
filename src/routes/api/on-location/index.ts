@@ -230,6 +230,11 @@ setInterval(() => {
 
 setInterval(() => {
     const avg = completions.reduce((acc, cur) => acc + cur.count, 0) / completions.length
+    console.info({
+        count: curCount,
+        completions: completions.length,
+        avg: avg ? Math.round(avg) : 0
+    })
     logger.info({
         count: curCount,
         completions: completions.length,
