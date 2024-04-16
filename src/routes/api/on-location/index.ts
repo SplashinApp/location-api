@@ -35,7 +35,7 @@ export const post = (req:Request, res:Response) => {
         }
         locations.set(location.user_id, location)
 
-        if(locations.size > 100){
+        if(locations.size > 300){
             processLocations()
         }
     }catch (e) {
