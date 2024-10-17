@@ -110,6 +110,7 @@ const insertLocations = async (updates:UserLocationUpdate[]) => {
     const partialLocations:ActivityUpdate[] = updates.filter(location => !location.latitude && !location.longitude) as unknown as ActivityUpdate[]
 
     const client = await connectToDB()
+    if(!client) return
     try {
         const formattedLocations = fullLocations.map(formatLocation)
         if(formattedLocations.length > 0){
