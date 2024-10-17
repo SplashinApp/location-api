@@ -225,7 +225,11 @@ const processFullLocations = async (client: PoolClient, items:any[]) => {
 }
 
 setInterval(() => {
-    processLocations()
+    try{
+        processLocations()
+    }catch (e) {
+        logger.warn(e)
+    }
 }, 1000 * 5)
 
 setInterval(() => {
