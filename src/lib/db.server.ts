@@ -19,14 +19,9 @@ const config = {
 let pool = new Pool(config);
 
 pool.on('error', async (err, client) => {
-    //log error then try to create a new pool
     console.error('Unexpected error on idle client', err)
-    await pool.end()
-    try{
-        pool = new Pool(config)
-    }catch (e){
-        console.error(e)
-    }
+    console.error('Pool Crashed')
+    process.exit(-1)
 })
 
 export const connectToDB = async () => {
