@@ -29,6 +29,10 @@ export const post = (req:Request, res:Response) => {
     try{
         const location:UserLocationUpdate = req.body
 
+        if(location.event === 'push'){
+            console.log(`Push received for user::${location.user_id}`)
+        }
+
         if(!isValid(location)){
             res.status(400).send('Invalid Request')
             return
