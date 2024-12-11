@@ -30,7 +30,7 @@ export const post = (req:Request, res:Response) => {
         const location:UserLocationUpdate = req.body
 
         if(location.event === 'push'){
-            console.log(`Push received for user::${location.user_id}`)
+            console.log(`[${new Date().toUTCString()}]Push received for user::${location.user_id} with uuid::${location.uuid}`)
         }
 
         if(!isValid(location)){
@@ -190,39 +190,39 @@ const processFullLocations = async (client: PoolClient, items:any[]) => {
                                       "isoCountryCode",
                                       geolocation_updated_at
             ) VALUES %L ON CONFLICT (user_id) DO UPDATE
-                                    SET uuid = EXCLUDED.uuid,
-                                        is_moving = EXCLUDED.is_moving,
-                                        location_updated_at = EXCLUDED.location_updated_at,
-                                        latitude = EXCLUDED.latitude,
-                                        longitude = EXCLUDED.longitude,
-                                        accuracy = EXCLUDED.accuracy,
-                                        speed = EXCLUDED.speed,
-                                        heading = EXCLUDED.heading,
-                                        altitude = EXCLUDED.altitude,
-                                        speed_accuracy = EXCLUDED.speed_accuracy,
-                                        heading_accuracy = EXCLUDED.heading_accuracy,
-                                        altitude_accuracy = EXCLUDED.altitude_accuracy,
-                                        ellipsoidal_altitude = EXCLUDED.ellipsoidal_altitude,
-                                        battery_level = EXCLUDED.battery_level,
-                                        battery_is_charging = EXCLUDED.battery_is_charging,
-                                        event = EXCLUDED.event,
-                                        activity = EXCLUDED.activity,
-                                        activity_confidence = EXCLUDED.activity_confidence,
-                                        activity_updated_at = EXCLUDED.activity_updated_at,
-                                        heartbeat_at = EXCLUDED.heartbeat_at,
-                                        last_updated_at = EXCLUDED.last_updated_at,
-                                        city = EXCLUDED.city,
-                                        name = EXCLUDED.name,
-                                        region = EXCLUDED.region,
-                                        street = EXCLUDED.street,
-                                        country = EXCLUDED.country,
-                                        district = EXCLUDED.district,
-                                        timezone = EXCLUDED.timezone,
-                                        subregion = EXCLUDED.subregion,
-                                        "postalCode" = EXCLUDED."postalCode",
-                                        "streetNumber" = EXCLUDED."streetNumber",
-                                        "isoCountryCode" = EXCLUDED."isoCountryCode",
-                                        geolocation_updated_at = EXCLUDED.geolocation_updated_at
+                                    SET uuid = COALESCE(EXCLUDED.uuid, user_location.uuid),
+                                        is_moving = COALESCE(EXCLUDED.is_moving, user_location.is_moving),
+                                        location_updated_at = COALESCE(EXCLUDED.location_updated_at, user_location.location_updated_at),
+                                        latitude = COALESCE(EXCLUDED.latitude, user_location.latitude),
+                                        longitude = COALESCE(EXCLUDED.longitude, user_location.longitude),
+                                        accuracy = COALESCE(EXCLUDED.accuracy, user_location.accuracy),
+                                        speed = COALESCE(EXCLUDED.speed, user_location.speed),
+                                        heading = COALESCE(EXCLUDED.heading, user_location.heading),
+                                        altitude = COALESCE(EXCLUDED.altitude, user_location.altitude),
+                                        speed_accuracy = COALESCE(EXCLUDED.speed_accuracy, user_location.speed_accuracy),
+                                        heading_accuracy = COALESCE(EXCLUDED.heading_accuracy, user_location.heading_accuracy),
+                                        altitude_accuracy = COALESCE(EXCLUDED.altitude_accuracy, user_location.altitude_accuracy),
+                                        ellipsoidal_altitude = COALESCE(EXCLUDED.ellipsoidal_altitude, user_location.ellipsoidal_altitude),
+                                        battery_level = COALESCE(EXCLUDED.battery_level, user_location.battery_level),
+                                        battery_is_charging = COALESCE(EXCLUDED.battery_is_charging, user_location.battery_is_charging),
+                                        event = COALESCE(EXCLUDED.event, user_location.event),
+                                        activity = COALESCE(EXCLUDED.activity, user_location.activity),
+                                        activity_confidence = COALESCE(EXCLUDED.activity_confidence, user_location.activity_confidence),
+                                        activity_updated_at = COALESCE(EXCLUDED.activity_updated_at, user_location.activity_updated_at),
+                                        heartbeat_at = COALESCE(EXCLUDED.heartbeat_at, user_location.heartbeat_at),
+                                        last_updated_at = COALESCE(EXCLUDED.last_updated_at, user_location.last_updated_at),
+                                        city = COALESCE(EXCLUDED.city, user_location.city),
+                                        name = COALESCE(EXCLUDED.name, user_location.name),
+                                        region = COALESCE(EXCLUDED.region, user_location.region),
+                                        street = COALESCE(EXCLUDED.street, user_location.street),
+                                        country = COALESCE(EXCLUDED.country, user_location.country),
+                                        district = COALESCE(EXCLUDED.district, user_location.district),
+                                        timezone = COALESCE(EXCLUDED.timezone, user_location.timezone),
+                                        subregion = COALESCE(EXCLUDED.subregion, user_location.subregion),
+                                        "postalCode" = COALESCE(EXCLUDED."postalCode", user_location."postalCode"),
+                                        "streetNumber" = COALESCE(EXCLUDED."streetNumber", user_location."streetNumber"),
+                                        "isoCountryCode" = COALESCE(EXCLUDED."isoCountryCode", user_location."isoCountryCode"),
+                                        geolocation_updated_at = COALESCE(EXCLUDED.geolocation_updated_at, user_location.geolocation_updated_at)
         `, items)
 
     await client.query(query)
