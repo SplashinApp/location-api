@@ -4,6 +4,9 @@ import {connectToDB} from "../../../lib/db.server.js";
 import format from 'pg-format'
 import {PoolClient} from "pg";
 import logger from "../../../lib/logger.js";
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+dotenv.config({path:`.env.${process.env.NODE_ENV}`})
 
 // We are using a Map to make sure if the same user sends multiple requests, we only keep the latest one
 const locations:Map<string, UserLocationUpdate> = new Map()
@@ -24,10 +27,57 @@ function isValid(arg: any): arg is UserLocationUpdate{
     }
 }
 
+function getUidFromJwt(req:Request):string|null {
+    const token = req.headers.authorization
+    if(!token) {
+        throw new Error("No token")
+    }
+    const jwtToken = token.split(' ')[1]
+    if(!jwtToken) {
+        throw new Error("No token")
+    }
+    if(!process.env.LOCATION_JWT_SIGNING_KEY) {
+        throw new Error("No signing key")
+    }
+    // validate the token
+    const verified:any = jwt.verify(jwtToken, process.env.LOCATION_JWT_SIGNING_KEY)
+    if(!verified) {
+        throw new Error("Invalid token")
+    }
+    if(!verified.uid) {
+        throw new Error("No uid in token")
+    }
+    return verified.uid
+}
+
 export const post = (req:Request, res:Response) => {
+
+    //todo remove for migration period
+    let uidFromJwt:string | null
+    try{
+        uidFromJwt = getUidFromJwt(req)
+        if(!uidFromJwt){
+            throw new Error("No uid in token")
+        }
+        console.log(`[${new Date().toUTCString()}] - location received for user::${uidFromJwt}`)
+    }catch(e){
+        let m = e.message
+        console.log(m)
+        res.statusCode = 401
+        res.send("Unauthorized")
+        return
+    }
+    //todo end
 
     try{
         const location:UserLocationUpdate = req.body
+
+        //todo remove for migration period
+        if(uidFromJwt !== location.user_id){
+            res.status(401).send('Unauthorized')
+            return
+        }
+        //todo end
 
         if(location.event === 'push'){
             console.log(`[${new Date().toUTCString()}]Push received for user::${location.user_id} with uuid::${location.uuid}`)
@@ -37,6 +87,8 @@ export const post = (req:Request, res:Response) => {
             res.status(400).send('Invalid Request')
             return
         }
+
+
         locations.set(location.user_id, location)
 
         if(locations.size > 300){

@@ -1,10 +1,5 @@
 import fs from 'fs'
 import { Request, Response } from "express";
-import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
-
-
-dotenv.config({path:`.env.${process.env.NODE_ENV}`})
 
 const ROOT_FOLDER = '../routes/'
 
@@ -43,38 +38,7 @@ async function executeRoute(importURL:string, req:Request, resp:Response) {
     }
 }
 
-function validateJWT(req:Request) {
-    const token = req.headers.authorization
-    if(!token) {
-        throw new Error("No token")
-    }
-    const jwtToken = token.split(' ')[1]
-    if(!jwtToken) {
-        throw new Error("No token")
-    }
-    if(!process.env.LOCATION_JWT_SIGNING_KEY) {
-        throw new Error("No signing key")
-    }
-    // validate the token
-    const verified = jwt.verify(jwtToken, process.env.LOCATION_JWT_SIGNING_KEY)
-    if(!verified) {
-        throw new Error("Invalid token")
-    }
-
-}
-
 export const fileRouter = async (req:Request, resp:Response) => {
-    try{
-        if(req.url !== '/api/health') {
-            validateJWT(req)
-        }
-    }catch (e) {
-        let m = e.message
-        console.log(m)
-        resp.statusCode = 401
-        resp.send("Unauthorized")
-        return
-    }
     try{
 
         let importURL = (ROOT_FOLDER + req.url).replace("//", "/")
