@@ -1,8 +1,9 @@
 import { Request, Response } from 'express'
-import {UserLocationUpdate} from "../../../interface/index.js";
-import logger from "../../../lib/logger.js";
+import {UserLocationUpdate} from "../../../../interface/index.js";
+import logger from "../../../../lib/logger.js";
+import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
-import { insertLocations } from '../../../services/LocationService.js';
+import { insertLocations } from '../../../../services/LocationService.js';
 dotenv.config({path:`.env.${process.env.NODE_ENV}`})
 
 // We are using a Map to make sure if the same user sends multiple requests, we only keep the latest one
@@ -24,13 +25,57 @@ function isValid(arg: any): arg is UserLocationUpdate{
     }
 }
 
+function getUidFromJwt(req:Request):string|null {
+    const token = req.headers.authorization
+    if(!token) {
+        throw new Error("No token")
+    }
+    const jwtToken = token.split(' ')[1]
+    if(!jwtToken) {
+        throw new Error("No token")
+    }
+    if(!process.env.LOCATION_JWT_SIGNING_KEY) {
+        throw new Error("No signing key")
+    }
+    // validate the token
+    const verified:any = jwt.verify(jwtToken, process.env.LOCATION_JWT_SIGNING_KEY)
+    if(!verified) {
+        throw new Error("Invalid token")
+    }
+    if(!verified.uid) {
+        throw new Error("No uid in token")
+    }
+    return verified.uid
+}
+
 export const post = (req:Request, res:Response) => {
+
+    let uidFromJwt:string | null
+    try{
+        uidFromJwt = getUidFromJwt(req)
+        if(!uidFromJwt){
+            throw new Error("No uid in token")
+        }
+    }catch(e){
+        let m = e.message
+        console.log(m)
+        res.statusCode = 401
+        res.send("Unauthorized")
+        return
+    }
 
     try{
         const location:UserLocationUpdate = req.body
 
+        if(uidFromJwt !== location.user_id){
+            res.status(401).send('Unauthorized')
+            return
+        }
+
         if(location.event === 'push'){
-            console.log(`[${new Date().toUTCString()}]Push received for user::${location.user_id} with uuid::${location.uuid}`)
+            console.log(`[${new Date().toUTCString()}] Push::${location.user_id}`)
+        }else{
+            console.log(`[${new Date().toUTCString()}] Location::${location.user_id}`)
         }
 
         if(!isValid(location)){
@@ -83,7 +128,7 @@ setInterval(() => {
 setInterval(() => {
     const avg = completions.reduce((acc, cur) => acc + cur.count, 0) / completions.length
     // logger.info({
-    //     msg: `V1: Locations Updated ${curCount}`,
+    //     msg: `V3: Locations Updated ${curCount}`,
     //     count: curCount,
     //     completions: completions.length,
     //     avg: avg ? Math.round(avg) : 0
