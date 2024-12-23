@@ -56,7 +56,6 @@ export const post = (req:Request, res:Response) => {
         if(!uidFromJwt){
             throw new Error("No uid in token")
         }
-        console.log(`[${new Date().toUTCString()}] - location received for user::${uidFromJwt}`)
     }catch(e){
         let m = e.message
         console.log(m)
@@ -74,7 +73,9 @@ export const post = (req:Request, res:Response) => {
         }
 
         if(location.event === 'push'){
-            console.log(`[${new Date().toUTCString()}]Push received for user::${location.user_id} with uuid::${location.uuid}`)
+            console.log(`[${new Date().toUTCString()}] Push::${location.user_id}`)
+        }else{
+            console.log(`[${new Date().toUTCString()}] Location::${location.user_id}`)
         }
 
         if(!isValid(location)){
@@ -126,12 +127,12 @@ setInterval(() => {
 
 setInterval(() => {
     const avg = completions.reduce((acc, cur) => acc + cur.count, 0) / completions.length
-    logger.info({
-        msg: `V3: Locations Updated ${curCount}`,
-        count: curCount,
-        completions: completions.length,
-        avg: avg ? Math.round(avg) : 0
-    })
+    // logger.info({
+    //     msg: `V3: Locations Updated ${curCount}`,
+    //     count: curCount,
+    //     completions: completions.length,
+    //     avg: avg ? Math.round(avg) : 0
+    // })
     completions = []
     curCount = 0
 }, 1000 * 60)

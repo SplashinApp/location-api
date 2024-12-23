@@ -82,12 +82,12 @@ setInterval(() => {
 
 setInterval(() => {
     const avg = completions.reduce((acc, cur) => acc + cur.count, 0) / completions.length
-    logger.info({
-        msg: `V1: Locations Updated ${curCount}`,
-        count: curCount,
-        completions: completions.length,
-        avg: avg ? Math.round(avg) : 0
-    })
+    // logger.info({
+    //     msg: `V1: Locations Updated ${curCount}`,
+    //     count: curCount,
+    //     completions: completions.length,
+    //     avg: avg ? Math.round(avg) : 0
+    // })
     completions = []
     curCount = 0
 }, 1000 * 60)
