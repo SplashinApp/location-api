@@ -15,7 +15,7 @@ export type LocationActivityType =
     | 'still'
     | 'unknown'
     | 'walking';
-export type LocationEventType = 'motionchange' | 'geofence' | 'heartbeat' | 'providerchange';
+export type LocationEventType = 'motionchange' | 'geofence' | 'heartbeat' | 'providerchange' | 'push';
 export interface UserLocationUpdate {
     user_id: string;
     location_updated_at: string | null;

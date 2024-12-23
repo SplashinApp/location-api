@@ -1,7 +1,6 @@
 import fs from 'fs'
 import { Request, Response } from "express";
 
-
 const ROOT_FOLDER = '../routes/'
 
 async function getDynamicHandler(folder:string) {
@@ -38,8 +37,10 @@ async function executeRoute(importURL:string, req:Request, resp:Response) {
         return false
     }
 }
+
 export const fileRouter = async (req:Request, resp:Response) => {
     try{
+
         let importURL = (ROOT_FOLDER + req.url).replace("//", "/")
 
         let isFile = fs.existsSync(importURL + '.js')
