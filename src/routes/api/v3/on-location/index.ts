@@ -57,6 +57,7 @@ export const post = (req:Request, res:Response) => {
             throw new Error("No uid in token")
         }
     }catch(e){
+        // @ts-ignore
         let m = e.message
         console.log(m)
         res.statusCode = 401
