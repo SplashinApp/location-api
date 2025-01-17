@@ -78,7 +78,7 @@ export const post = (req:Request, res:Response) => {
 
         if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
                 console.log('sending error here test')
-                console.log(uidFromJwt)
+                console.log(`uidFromJwt: ${uidFromJwt} - location.user_id: ${location.user_id}`)
                     // res.status(401).send('Unauthorized')
                     // return
         }
