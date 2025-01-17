@@ -88,7 +88,7 @@ export const post = (req:Request, res:Response) => {
         locations.set(location.user_id, location)
 
         if(locations.size > 300){
-            processLocations()
+             processLocations()
         }
     }catch (e) {
         logger.error(e)
@@ -111,7 +111,7 @@ const processLocations = async() => {
     const arr = Array.from(queuedMap.values())
         .sort((a,b)=> a.user_id.localeCompare(b.user_id))
 
-    await insertLocations(arr, curCount)
+    curCount = await insertLocations(arr, curCount)
     processing = false
     if(arr.length > 0)
     completions.push({time: now - Date.now(), count: arr.length})

@@ -4,20 +4,20 @@ import { connectToDB } from "../lib/db.server.js"
 import format from "pg-format"
 
 export const insertLocations = async (updates:UserLocationUpdate[], curCount:number) => {
-    if(updates.length === 0) return
+    if(updates.length === 0) return curCount
     const fullLocations = updates.filter(location => location.latitude && location.longitude)
     const partialLocations:ActivityUpdate[] = updates.filter(location => !location.latitude && !location.longitude) as unknown as ActivityUpdate[]
 
     const client = await connectToDB()
-    if(!client) return
+    if(!client) return curCount
     try {
         const formattedLocations = fullLocations.map(formatLocation)
         if(formattedLocations.length > 0){
-            await processFullLocations(client, formattedLocations, curCount)
+            return await processFullLocations(client, formattedLocations, curCount)
         }
         const formattedActivities = partialLocations.map(activity => [activity.user_id, activity.activity, activity.activity_confidence, activity.activity_updated_at, activity.last_updated_at])
         if(formattedActivities.length > 0){
-            await processActivities(client, formattedActivities, curCount)
+            return await processActivities(client, formattedActivities, curCount)
         }
 
     } catch (e) {
@@ -25,6 +25,7 @@ export const insertLocations = async (updates:UserLocationUpdate[], curCount:num
     } finally {
         client.release()
     }
+    return curCount
 }
 
 const formatLocation = (location:UserLocationUpdate) => {
@@ -84,6 +85,7 @@ const processActivities = async (client: PoolClient, items:any[], curCount:numbe
 
     await client.query(query)
     curCount += items.length
+    return curCount
 }
 
 const processFullLocations = async (client: PoolClient, items:any[], curCount:number) => {
@@ -162,4 +164,5 @@ const processFullLocations = async (client: PoolClient, items:any[], curCount:nu
 
     await client.query(query)
     curCount += items.length
+    return curCount
 }
