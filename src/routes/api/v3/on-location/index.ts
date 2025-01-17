@@ -52,7 +52,7 @@ export const post = (req:Request, res:Response) => {
 
     let uidFromJwt:string | null
 
-    if(Math.random() < 0.001){
+    if(Math.random() < 0.0002){
         try{
             uidFromJwt = getUidFromJwt(req)
             if(!uidFromJwt){
@@ -64,7 +64,7 @@ export const post = (req:Request, res:Response) => {
             console.log(req.headers.authorization)
             try{
                 console.log(`user::${req.body.user_id}`)
-                console.log(`origin::${req.headers.origin}`)
+                console.log(JSON.stringify(req.headers))
                 console.log(`url::${req.url}`)
             }catch (e){
 
