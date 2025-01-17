@@ -55,7 +55,6 @@ export const post = (req:Request, res:Response) => {
 
     let uidFromJwt:string | null = null
 
-    if(Math.random() < 0.0002){
         try{
             uidFromJwt = getUidFromJwt(req)
             if(uidFromJwt === 'background_app_update'){
@@ -68,14 +67,13 @@ export const post = (req:Request, res:Response) => {
             // @ts-ignore
             let m = e.message
             console.log(m)
-            if(Math.random() < 0.1){
+            if(Math.random() < 0.001){
                 console.log('sending error test')
                 res.statusCode = 401
                 res.send("Unauthorized")
                 return
             }
         }
-    }
 
     try{
         const location:UserLocationUpdate = req.body
@@ -84,8 +82,8 @@ export const post = (req:Request, res:Response) => {
             if(Math.random() < 0.01) {
                 console.log('sending error here test')
                 console.log(uidFromJwt)
-                    res.status(401).send('Unauthorized')
-                    return
+                    // res.status(401).send('Unauthorized')
+                    // return
             }
         }
 
