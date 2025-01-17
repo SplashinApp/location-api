@@ -80,10 +80,14 @@ export const post = (req:Request, res:Response) => {
     try{
         const location:UserLocationUpdate = req.body
 
-        // if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
-        //     res.status(401).send('Unauthorized')
-        //     return
-        // }
+        if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
+            if(Math.random() < 0.01) {
+                console.log('sending error here test')
+                console.log(uidFromJwt)
+                    res.status(401).send('Unauthorized')
+                    return
+            }
+        }
 
         // if(location.event === 'push'){
         //     console.log(`[${new Date().toUTCString()}] Push::${location.user_id}`)
