@@ -58,7 +58,7 @@ export const post = (req:Request, res:Response) => {
         try{
             uidFromJwt = getUidFromJwt(req)
             if(uidFromJwt === 'background_app_update'){
-                console.log(`Device was updated in background before jwt could be retrieved `)
+                // console.log(`Device was updated in background before jwt could be retrieved `)
             }
             if(!uidFromJwt){
                 throw new Error("No uid in token")
