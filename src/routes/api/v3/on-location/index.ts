@@ -67,24 +67,20 @@ export const post = (req:Request, res:Response) => {
             // @ts-ignore
             let m = e.message
             console.log(m)
-            if(Math.random() < 0.001){
-                console.log('sending error test')
-                res.statusCode = 401
-                res.send("Unauthorized")
-                return
-            }
+            console.log('sending error test')
+            res.statusCode = 401
+            res.send("Unauthorized")
+            return
         }
 
     try{
         const location:UserLocationUpdate = req.body
 
         if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
-            if(Math.random() < 0.01) {
                 console.log('sending error here test')
                 console.log(uidFromJwt)
                     // res.status(401).send('Unauthorized')
                     // return
-            }
         }
 
         // if(location.event === 'push'){
