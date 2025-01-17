@@ -68,7 +68,8 @@ export const post = (req:Request, res:Response) => {
             // @ts-ignore
             let m = e.message
             console.log(m)
-            if(Math.random() < 0.0001){
+            if(Math.random() < 0.01){
+                console.log('sending error test')
                 res.statusCode = 401
                 res.send("Unauthorized")
                 return
