@@ -37,6 +37,9 @@ function getUidFromJwt(req:Request):string|null {
     if(!process.env.LOCATION_JWT_SIGNING_KEY) {
         throw new Error("No signing key")
     }
+    if(jwtToken === 'undefined'){
+        return 'background_app_update'
+    }
     // validate the token
     const verified:any = jwt.verify(jwtToken, process.env.LOCATION_JWT_SIGNING_KEY)
     if(!verified) {
@@ -50,39 +53,34 @@ function getUidFromJwt(req:Request):string|null {
 
 export const post = (req:Request, res:Response) => {
 
-    let uidFromJwt:string | null
+    let uidFromJwt:string | null = null
 
     if(Math.random() < 0.0002){
         try{
             uidFromJwt = getUidFromJwt(req)
+            if(uidFromJwt === 'background_app_update'){
+                console.log(`Device was updated in background before jwt could be retrieved `)
+            }
             if(!uidFromJwt){
                 throw new Error("No uid in token")
             }
         }catch(e){
             // @ts-ignore
             let m = e.message
-            console.log(req.headers.authorization)
-            try{
-                console.log(`user::${req.body.user_id}`)
-                console.log(JSON.stringify(req.headers))
-                console.log(`url::${req.url}`)
-            }catch (e){
-
-            }
             console.log(m)
-            // res.statusCode = 401
-            // res.send("Unauthorized")
-            // return
+            res.statusCode = 401
+            res.send("Unauthorized")
+            return
         }
     }
 
     try{
         const location:UserLocationUpdate = req.body
 
-        // if(uidFromJwt !== location.user_id){
-        //     res.status(401).send('Unauthorized')
-        //     return
-        // }
+        if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
+            res.status(401).send('Unauthorized')
+            return
+        }
 
         // if(location.event === 'push'){
         //     console.log(`[${new Date().toUTCString()}] Push::${location.user_id}`)
