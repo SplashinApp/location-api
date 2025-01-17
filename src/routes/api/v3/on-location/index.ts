@@ -30,6 +30,7 @@ function getUidFromJwt(req:Request):string|null {
     if(!token) {
         throw new Error("No token")
     }
+    console.log(token)
     const jwtToken = token.split(' ')[1]
     if(!jwtToken) {
         throw new Error("No token")
@@ -51,19 +52,22 @@ function getUidFromJwt(req:Request):string|null {
 export const post = (req:Request, res:Response) => {
 
     let uidFromJwt:string | null
-    // try{
-    //     uidFromJwt = getUidFromJwt(req)
-    //     if(!uidFromJwt){
-    //         throw new Error("No uid in token")
-    //     }
-    // }catch(e){
-    //     // @ts-ignore
-    //     let m = e.message
-    //     console.log(m)
-    //     res.statusCode = 401
-    //     res.send("Unauthorized")
-    //     return
-    // }
+
+    if(Math.random() < 0.001){
+        try{
+            uidFromJwt = getUidFromJwt(req)
+            if(!uidFromJwt){
+                throw new Error("No uid in token")
+            }
+        }catch(e){
+            // @ts-ignore
+            let m = e.message
+            console.log(m)
+            // res.statusCode = 401
+            // res.send("Unauthorized")
+            // return
+        }
+    }
 
     try{
         const location:UserLocationUpdate = req.body
