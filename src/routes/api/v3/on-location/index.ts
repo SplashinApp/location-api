@@ -64,13 +64,14 @@ export const post = (req:Request, res:Response) => {
             console.log(req.headers.authorization)
             try{
                 console.log(`user::${req.body.user_id}`)
+                console.log(`url::${req.url}`)
             }catch (e){
 
             }
             console.log(m)
-            res.statusCode = 401
-            res.send("Unauthorized")
-            return
+            // res.statusCode = 401
+            // res.send("Unauthorized")
+            // return
         }
     }
 
