@@ -52,7 +52,7 @@ export const post = (req:Request, res:Response) => {
 
     let uidFromJwt:string | null
 
-    if(Math.random() < 0.01){
+    if(Math.random() < 0.001){
         try{
             uidFromJwt = getUidFromJwt(req)
             if(!uidFromJwt){
@@ -62,10 +62,15 @@ export const post = (req:Request, res:Response) => {
             // @ts-ignore
             let m = e.message
             console.log(req.headers.authorization)
+            try{
+                console.log(`user::${req.body.user_id}`)
+            }catch (e){
+
+            }
             console.log(m)
-            // res.statusCode = 401
-            // res.send("Unauthorized")
-            // return
+            res.statusCode = 401
+            res.send("Unauthorized")
+            return
         }
     }
 
