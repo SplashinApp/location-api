@@ -30,7 +30,6 @@ function getUidFromJwt(req:Request):string|null {
     if(!token) {
         throw new Error("No token")
     }
-    console.log(token)
     const jwtToken = token.split(' ')[1]
     if(!jwtToken) {
         throw new Error("No token")
@@ -53,7 +52,7 @@ export const post = (req:Request, res:Response) => {
 
     let uidFromJwt:string | null
 
-    if(Math.random() < 0.001){
+    if(Math.random() < 0.01){
         try{
             uidFromJwt = getUidFromJwt(req)
             if(!uidFromJwt){
@@ -62,6 +61,7 @@ export const post = (req:Request, res:Response) => {
         }catch(e){
             // @ts-ignore
             let m = e.message
+            console.log(req.headers.authorization)
             console.log(m)
             // res.statusCode = 401
             // res.send("Unauthorized")
