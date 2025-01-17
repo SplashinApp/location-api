@@ -64,7 +64,7 @@ export const post = (req:Request, res:Response) => {
             console.log(req.headers.authorization)
             try{
                 console.log(`user::${req.body.user_id}`)
-                console.log(`origin::${req.originalUrl}`)
+                console.log(`origin::${req.headers.origin}`)
                 console.log(`url::${req.url}`)
             }catch (e){
 
