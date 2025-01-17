@@ -129,7 +129,7 @@ const processFullLocations = async (client: PoolClient, items:any[], curCount:nu
             ) VALUES %L ON CONFLICT (user_id) DO UPDATE
                                     SET uuid = COALESCE(EXCLUDED.uuid, user_location.uuid),
                                         is_moving = COALESCE(EXCLUDED.is_moving, user_location.is_moving),
-                                        location_updated_at = COALESCE(EXCLUDED.location_updated_at, user_location.location_updated_at),
+                                        location_updated_at = COALESCE(EXCLUDED.location_updated_at, user_location.location_updated_at, now() at time zone 'utc'),
                                         latitude = COALESCE(EXCLUDED.latitude, user_location.latitude),
                                         longitude = COALESCE(EXCLUDED.longitude, user_location.longitude),
                                         accuracy = COALESCE(EXCLUDED.accuracy, user_location.accuracy),
