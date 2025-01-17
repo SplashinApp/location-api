@@ -51,27 +51,27 @@ function getUidFromJwt(req:Request):string|null {
 export const post = (req:Request, res:Response) => {
 
     let uidFromJwt:string | null
-    try{
-        uidFromJwt = getUidFromJwt(req)
-        if(!uidFromJwt){
-            throw new Error("No uid in token")
-        }
-    }catch(e){
-        // @ts-ignore
-        let m = e.message
-        console.log(m)
-        res.statusCode = 401
-        res.send("Unauthorized")
-        return
-    }
+    // try{
+    //     uidFromJwt = getUidFromJwt(req)
+    //     if(!uidFromJwt){
+    //         throw new Error("No uid in token")
+    //     }
+    // }catch(e){
+    //     // @ts-ignore
+    //     let m = e.message
+    //     console.log(m)
+    //     res.statusCode = 401
+    //     res.send("Unauthorized")
+    //     return
+    // }
 
     try{
         const location:UserLocationUpdate = req.body
 
-        if(uidFromJwt !== location.user_id){
-            res.status(401).send('Unauthorized')
-            return
-        }
+        // if(uidFromJwt !== location.user_id){
+        //     res.status(401).send('Unauthorized')
+        //     return
+        // }
 
         if(location.event === 'push'){
             console.log(`[${new Date().toUTCString()}] Push::${location.user_id}`)
