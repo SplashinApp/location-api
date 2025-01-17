@@ -78,9 +78,18 @@ export const post = (req:Request, res:Response) => {
 
         if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
                 console.log('sending error here test')
-                console.log(`uidFromJwt: ${uidFromJwt} - location.user_id: ${location.user_id}`)
+                console.log(`uidFromJwt: ${uidFromJwt} - location.user_id: ${location.user_id} - event: ${location.event}`)
                     // res.status(401).send('Unauthorized')
                     // return
+        }
+
+        if(!location.user_id && uidFromJwt && uidFromJwt !== 'background_app_update'){
+            console.log('setting user id from jwt for now')
+            location.user_id = uidFromJwt
+        }
+        if(!isValid(location)){
+            res.status(400).send('Invalid Request')
+            return
         }
 
         // if(location.event === 'push'){
@@ -89,10 +98,6 @@ export const post = (req:Request, res:Response) => {
         //     console.log(`[${new Date().toUTCString()}] Location::${location.user_id}`)
         // }
 
-        if(!isValid(location)){
-            res.status(400).send('Invalid Request')
-            return
-        }
 
 
         locations.set(location.user_id, location)
