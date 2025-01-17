@@ -29,9 +29,9 @@ export const post = (req:Request, res:Response) => {
     try{
         const location:UserLocationUpdate = req.body
 
-        if(location.event === 'push'){
-            console.log(`[${new Date().toUTCString()}]Push received for user::${location.user_id} with uuid::${location.uuid}`)
-        }
+        // if(location.event === 'push'){
+            // console.log(`[${new Date().toUTCString()}]Push received for user::${location.user_id} with uuid::${location.uuid}`)
+        // }
 
         if(!isValid(location)){
             res.status(400).send('Invalid Request')

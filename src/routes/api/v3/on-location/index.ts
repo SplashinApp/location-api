@@ -77,11 +77,11 @@ export const post = (req:Request, res:Response) => {
         //     return
         // }
 
-        if(location.event === 'push'){
-            console.log(`[${new Date().toUTCString()}] Push::${location.user_id}`)
-        }else{
-            console.log(`[${new Date().toUTCString()}] Location::${location.user_id}`)
-        }
+        // if(location.event === 'push'){
+        //     console.log(`[${new Date().toUTCString()}] Push::${location.user_id}`)
+        // }else{
+        //     console.log(`[${new Date().toUTCString()}] Location::${location.user_id}`)
+        // }
 
         if(!isValid(location)){
             res.status(400).send('Invalid Request')
