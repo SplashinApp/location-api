@@ -67,7 +67,6 @@ export const post = (req:Request, res:Response) => {
             // @ts-ignore
             let m = e.message
             console.log(m)
-            console.log('sending error test')
             res.statusCode = 401
             res.send("Unauthorized")
             return
