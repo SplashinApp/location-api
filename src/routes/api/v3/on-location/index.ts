@@ -65,27 +65,27 @@ export const post = (req:Request, res:Response) => {
             }
         }catch(e){
             // @ts-ignore
-            let m = e.message
-            console.log(m)
-            res.statusCode = 401
-            res.send("Unauthorized")
-            return
+            // let m = e.message
+            // console.log(m)
+            // res.statusCode = 401
+            // res.send("Unauthorized")
+            // return
         }
 
     try{
         const location:UserLocationUpdate = req.body
 
-        if(!location.user_id && uidFromJwt && uidFromJwt !== 'background_app_update'){
-            console.log('setting user id from jwt for now')
-            location.user_id = uidFromJwt
-        }
-
-        if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
-                console.log('sending error here test')
-                console.log(`uidFromJwt: ${uidFromJwt} - location.user_id: ${location.user_id} - event: ${location.event}`)
-                res.status(401).send('Unauthorized')
-                return
-        }
+        // if(!location.user_id && uidFromJwt && uidFromJwt !== 'background_app_update'){
+        //     console.log('setting user id from jwt for now')
+        //     location.user_id = uidFromJwt
+        // }
+        //
+        // if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
+        //         console.log('sending error here test')
+        //         console.log(`uidFromJwt: ${uidFromJwt} - location.user_id: ${location.user_id} - event: ${location.event}`)
+        //         res.status(401).send('Unauthorized')
+        //         return
+        // }
 
         if(!isValid(location)){
             res.status(400).send('Invalid Request')
