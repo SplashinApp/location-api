@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import {UserLocationUpdate} from "../../../../interface/index.js";
 import logger from "../../../../lib/logger.js";
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { insertLocations } from '../../../../services/LocationService.js';
 dotenv.config({path:`.env.${process.env.NODE_ENV}`})
@@ -9,6 +9,7 @@ dotenv.config({path:`.env.${process.env.NODE_ENV}`})
 // We are using a Map to make sure if the same user sends multiple requests, we only keep the latest one
 const locations:Map<string, UserLocationUpdate> = new Map()
 let curCount = 0
+let oldJwtCount = 0
 let completions:{
     time: number,
     count: number
@@ -51,6 +52,34 @@ function getUidFromJwt(req:Request):string|null {
     return verified.uid
 }
 
+function isAllowedJwtExpiration(req:Request):null | string {
+    const token = req.headers.authorization
+    if(!token) {
+        throw new Error("No token")
+    }
+    const jwtToken = token.split(' ')[1]
+    if(!jwtToken) {
+        throw new Error("No token")
+    }
+    if(!process.env.LOCATION_JWT_SIGNING_KEY) {
+        throw new Error("No signing key")
+    }
+    // validate the token
+    const decodedToken:JwtPayload | string | null = jwt.decode(jwtToken)
+    if(!decodedToken || typeof decodedToken === 'string') {
+        throw new Error("Invalid token")
+    }
+    if(!decodedToken.exp) {
+        throw new Error("No exp in token")
+    }
+    const exp = decodedToken.exp * 1000
+    // if expiration is before Feb 18th 2025 then we will allow it because we didn't handle expirations properly before then
+    if(exp < 1739895998000){
+        return decodedToken.uid
+    }
+    return null
+}
+
 export const post = (req:Request, res:Response) => {
 
     let uidFromJwt:string | null = null
@@ -63,29 +92,42 @@ export const post = (req:Request, res:Response) => {
             if(!uidFromJwt){
                 throw new Error("No uid in token")
             }
+            //todo when turning this back on, we can filter jwt expirations
+            // before the fix to send something other than a 401 to keep the
+            // server from being slammed
         }catch(e){
             // @ts-ignore
             // let m = e.message
             // console.log(m)
-            // res.statusCode = 401
-            // res.send("Unauthorized")
-            // return
+            try{
+                uidFromJwt = isAllowedJwtExpiration(req)
+                if(uidFromJwt) {
+                    oldJwtCount++
+                }
+            }catch (e) {
+            }
+
+            if(!uidFromJwt){
+                res.statusCode = 401
+                res.send("Unauthorized")
+                return
+            }
         }
 
     try{
         const location:UserLocationUpdate = req.body
 
-        // if(!location.user_id && uidFromJwt && uidFromJwt !== 'background_app_update'){
-        //     console.log('setting user id from jwt for now')
-        //     location.user_id = uidFromJwt
-        // }
-        //
-        // if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
-        //         console.log('sending error here test')
-        //         console.log(`uidFromJwt: ${uidFromJwt} - location.user_id: ${location.user_id} - event: ${location.event}`)
-        //         res.status(401).send('Unauthorized')
-        //         return
-        // }
+        if(!location.user_id && uidFromJwt && uidFromJwt !== 'background_app_update'){
+            // console.log('setting user id from jwt for now')
+            location.user_id = uidFromJwt
+        }
+
+        if(!uidFromJwt || (uidFromJwt && uidFromJwt !== location.user_id && uidFromJwt !== 'background_app_update')){
+                // console.log('sending error here test')
+                // console.log(`uidFromJwt: ${uidFromJwt} - location.user_id: ${location.user_id} - event: ${location.event}`)
+                res.status(401).send('Unauthorized')
+                return
+        }
 
         if(!isValid(location)){
             res.status(400).send('Invalid Request')
@@ -147,8 +189,10 @@ setInterval(() => {
         msg: `V3: Locations Updated ${curCount}`,
         count: curCount,
         completions: completions.length,
-        avg: avg ? Math.round(avg) : 0
+        avg: avg ? Math.round(avg) : 0,
+        oldJwtCount
     })
     completions = []
+    oldJwtCount = 0
     curCount = 0
 }, 1000 * 60)
