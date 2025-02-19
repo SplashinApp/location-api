@@ -99,12 +99,14 @@ export const post = (req:Request, res:Response) => {
             // @ts-ignore
             // let m = e.message
             // console.log(m)
-            try{
-                uidFromJwt = isAllowedJwtExpiration(req)
-                if(uidFromJwt) {
-                    oldJwtCount++
+            if(m === 'jwt expired') {
+                try {
+                    uidFromJwt = isAllowedJwtExpiration(req)
+                    if (uidFromJwt) {
+                        oldJwtCount++
+                    }
+                } catch (e) {
                 }
-            }catch (e) {
             }
 
             if(!uidFromJwt){
