@@ -124,8 +124,8 @@ export const post = (req:Request, res:Response) => {
             pushes++
         }
 
-        if(location.user_id === 'd35e7456-207e-40c0-8e20-3aca5d712769'){
-            console.log('CADE')
+        if(location.user_id === '1a2ccc9d-c39c-49f7-b36f-e90b3458de5e'){
+            console.log('Axel')
             console.log(req.headers.authorization)
             console.log(location)
         }
