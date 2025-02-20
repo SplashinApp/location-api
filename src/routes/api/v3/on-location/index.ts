@@ -10,6 +10,7 @@ dotenv.config({path:`.env.${process.env.NODE_ENV}`})
 const locations:Map<string, UserLocationUpdate> = new Map()
 let curCount = 0
 let oldJwtCount = 0
+let pushes = 0
 let completions:{
     time: number,
     count: number
@@ -119,6 +120,10 @@ export const post = (req:Request, res:Response) => {
     try{
         const location:UserLocationUpdate = req.body
 
+        if(location.event ==='push'){
+            pushes++
+        }
+
         if(location.user_id === 'd35e7456-207e-40c0-8e20-3aca5d712769'){
             console.log('CADE')
             console.log(req.headers.authorization)
@@ -198,9 +203,11 @@ setInterval(() => {
         count: curCount,
         completions: completions.length,
         avg: avg ? Math.round(avg) : 0,
+        pushes,
         oldJwtCount
     })
     completions = []
     oldJwtCount = 0
     curCount = 0
-}, 1000 * 10)
+    pushes = 0
+}, 1000 * 60)
