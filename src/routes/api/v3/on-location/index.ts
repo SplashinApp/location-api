@@ -12,6 +12,7 @@ let curCount = 0
 let oldJwtCount = 0
 let pushes = 0
 let pushesWithoutJwt = 0
+let shouldBeDenied = 0
 let completions:{
     time: number,
     count: number
@@ -112,6 +113,7 @@ export const post = (req:Request, res:Response) => {
             }
 
             if(!uidFromJwt){
+                shouldBeDenied++
                 // res.statusCode = 401
                 // res.send("Unauthorized")
                 // return
@@ -209,11 +211,13 @@ setInterval(() => {
         avg: avg ? Math.round(avg) : 0,
         pushes,
         pushesWithoutJwt,
-        oldJwtCount
+        oldJwtCount,
+        shouldBeDenied
     })
     completions = []
     oldJwtCount = 0
     curCount = 0
     pushes = 0
     pushesWithoutJwt = 0
+    shouldBeDenied = 0
 }, 1000 * 60)
