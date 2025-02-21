@@ -135,11 +135,7 @@ export const post = (req:Request, res:Response) => {
             console.log(req.headers.authorization)
             console.log(location)
         }
-        if(location.user_id === '366499e5-ecbd-4961-92f9-d6bf7c0946ee'){
-            console.log('Addie')
-            console.log(req.headers.authorization)
-            console.log(location)
-        }
+
         if(location.user_id === 'd5821817-1166-4e0d-8060-ccbbcd6e6dfd'){
             console.log('Haley')
             console.log(req.headers.authorization)
