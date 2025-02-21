@@ -11,6 +11,7 @@ const locations:Map<string, UserLocationUpdate> = new Map()
 let curCount = 0
 let oldJwtCount = 0
 let pushes = 0
+let pushesWithoutJwt = 0
 let completions:{
     time: number,
     count: number
@@ -122,6 +123,9 @@ export const post = (req:Request, res:Response) => {
 
         if(location.event ==='push'){
             pushes++
+            if(!uidFromJwt){
+                pushesWithoutJwt++
+            }
         }
 
         if(location.user_id === '1a2ccc9d-c39c-49f7-b36f-e90b3458de5e'){
@@ -204,10 +208,12 @@ setInterval(() => {
         completions: completions.length,
         avg: avg ? Math.round(avg) : 0,
         pushes,
+        pushesWithoutJwt,
         oldJwtCount
     })
     completions = []
     oldJwtCount = 0
     curCount = 0
     pushes = 0
+    pushesWithoutJwt = 0
 }, 1000 * 60)
