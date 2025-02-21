@@ -71,7 +71,6 @@ export const post = (req:Request, res:Response) => {
         if(uidFromJwt){
             location.user_id = uidFromJwt
         }
-        console.log(location.user_id)
 
         if(!isValid(location)){
             res.status(400).send('Invalid Request')
