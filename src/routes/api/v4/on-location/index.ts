@@ -68,6 +68,7 @@ export const post = (req:Request, res:Response) => {
 
     try{
         const location:UserLocationUpdate = req.body
+        console.log(location)
 
         if(uidFromJwt){
             location.user_id = uidFromJwt
