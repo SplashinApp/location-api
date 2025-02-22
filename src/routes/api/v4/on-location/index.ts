@@ -55,6 +55,7 @@ export const post = (req:Request, res:Response) => {
 
         try{
             uidFromJwt = getUidFromJwt(req)
+            console.log(uidFromJwt)
         }catch(e){
             // @ts-ignore
             // let m = e.message
