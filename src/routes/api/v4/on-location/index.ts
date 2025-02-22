@@ -55,7 +55,6 @@ export const post = (req:Request, res:Response) => {
 
         try{
             uidFromJwt = getUidFromJwt(req)
-            console.log(uidFromJwt)
         }catch(e){
             // @ts-ignore
             // let m = e.message
@@ -68,7 +67,6 @@ export const post = (req:Request, res:Response) => {
 
     try{
         const location:UserLocationUpdate = req.body
-        console.log(location)
 
         if(uidFromJwt){
             location.user_id = uidFromJwt

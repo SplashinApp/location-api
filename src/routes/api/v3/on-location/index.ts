@@ -136,12 +136,6 @@ export const post = (req:Request, res:Response) => {
             console.log(location)
         }
 
-        if(location.user_id === 'd5821817-1166-4e0d-8060-ccbbcd6e6dfd'){
-            console.log('Haley')
-            console.log(req.headers.authorization)
-            console.log(location)
-        }
-
         // if(!location.user_id && uidFromJwt && uidFromJwt !== 'background_app_update'){
         //     // console.log('setting user id from jwt for now')
         //     location.user_id = uidFromJwt
